@@ -108,8 +108,8 @@ module SippyCup
       @message_variables = 0
       # Reference variables don't generate warnings/errors if unused in the scenario
       @reference_variables = Set.new
-      @media_nodes = []
-      @errors = []
+      @media_nodes = #{@adv_ip}
+      @errors = #{@adv_ip}
       # If Advertise address is specified, use in place of [local_ip] otherwise use standard SIPp [local_ip] variable.
       @adv_ip = args[:advertise] || "[local_ip]"
 
@@ -250,7 +250,7 @@ a=fmtp:101 0-15
           end
           action << doc.create_element('assignstr') do |assignstr|
             assignstr['assign_to'] = "call_addr"
-            assignstr['value']     = "[$local_addr]"
+            assignstr['value']     = "#{@adv_ip}"
           end
         end
         recv << action
@@ -271,11 +271,11 @@ a=fmtp:101 0-15
 SIP/2.0 100 Trying
 [last_Via:]
 From: <sip:[$remote_addr]>;tag=[$remote_tag]
-To: <sip:[$local_addr]>;tag=[call_number]
+To: <sip:#{@adv_ip}>;tag=[call_number]
 [last_Call-ID:]
 [last_CSeq:]
 Server: #{USER_AGENT}
-Contact: <sip:[$local_addr];transport=[transport]>
+Contact: <sip:#{@adv_ip};transport=[transport]>
 Content-Length: 0
       MSG
       send msg, opts
@@ -293,11 +293,11 @@ Content-Length: 0
 SIP/2.0 180 Ringing
 [last_Via:]
 From: <sip:[$remote_addr]>;tag=[$remote_tag]
-To: <sip:[$local_addr]>;tag=[call_number]
+To: <sip:#{@adv_ip}>;tag=[call_number]
 [last_Call-ID:]
 [last_CSeq:]
 Server: #{USER_AGENT}
-Contact: <sip:[$local_addr];transport=[transport]>
+Contact: <sip:#{@adv_ip};transport=[transport]>
 Content-Length: 0
       MSG
       send msg, opts
@@ -316,11 +316,11 @@ Content-Length: 0
 SIP/2.0 200 Ok
 [last_Via:]
 From: <sip:[$remote_addr]>;tag=[$remote_tag]
-To: <sip:[$local_addr]>;tag=[call_number]
+To: <sip:#{@adv_ip}>;tag=[call_number]
 [last_Call-ID:]
 [last_CSeq:]
 Server: #{USER_AGENT}
-Contact: <sip:[$local_addr];transport=[transport]>
+Contact: <sip:#{@adv_ip};transport=[transport]>
 Content-Type: application/sdp
 [routes]
 Content-Length: [len]
@@ -452,7 +452,7 @@ From: "#{@from_user}" <sip:#{@from_user}@#{@adv_ip}:[local_port]>;tag=[call_numb
 To: <sip:[service]@[remote_ip]:[remote_port]>[peer_tag_param]
 Call-ID: [call_id]
 CSeq: [cseq] ACK
-Contact: <sip:[$local_addr];transport=[transport]>
+Contact: <sip:#{@adv_ip};transport=[transport]>
 Max-Forwards: 100
 User-Agent: #{USER_AGENT}
 Content-Length: 0
@@ -503,7 +503,7 @@ From: "#{@from_user}" <sip:#{@from_user}@#{@adv_ip}:[local_port]>;tag=[call_numb
 To: <sip:[service]@[remote_ip]:[remote_port]>[peer_tag_param]
 Call-ID: [call_id]
 CSeq: [cseq] INFO
-Contact: <sip:[$local_addr];transport=[transport]>
+Contact: <sip:#{@adv_ip};transport=[transport]>
 Max-Forwards: 100
 User-Agent: #{USER_AGENT}
 [routes]
@@ -563,9 +563,9 @@ Duration=#{delay}
 
 BYE sip:[$call_addr] SIP/2.0
 Via: SIP/2.0/[transport] #{@adv_ip}:[local_port];branch=[branch]
-From: <sip:[$local_addr]>;tag=[call_number]
+From: <sip:#{@adv_ip}>;tag=[call_number]
 To: <sip:[$remote_addr]>;tag=[$remote_tag]
-Contact: <sip:[$local_addr];transport=[transport]>
+Contact: <sip:#{@adv_ip};transport=[transport]>
 Call-ID: [call_id]
 CSeq: [cseq] BYE
 Max-Forwards: 100
@@ -599,7 +599,7 @@ SIP/2.0 200 OK
 [last_To:]
 [last_Call-ID:]
 [last_CSeq:]
-Contact: <sip:[$local_addr];transport=[transport]>
+Contact: <sip:#{@adv_ip};transport=[transport]>
 Max-Forwards: 100
 User-Agent: #{USER_AGENT}
 Content-Length: 0
